@@ -1,0 +1,98 @@
+
+const NOTIFY_EMAIL = "mo.zandi1364@gmail.com";
+const SPREADSHEET_NAME = "PinkQueenPlus Ads Submissions";
+
+function doGet() {
+  return ContentService
+    .createTextOutput("PinkQueenPlus Ads backend is ready.")
+    .setMimeType(ContentService.MimeType.TEXT);
+}
+
+function doPost(e) {
+  try {
+    if (!e) throw new Error("Missing request");
+
+    let data = {};
+
+    if (e.parameter) {
+      Object.keys(e.parameter).forEach(function (key) {
+        data[key] = e.parameter[key];
+      });
+    }
+
+    if (e.postData && e.postData.contents) {
+      const contentType = e.postData.type || "";
+
+      if (contentType.indexOf("application/json") !== -1) {
+        const parsed = JSON.parse(e.postData.contents);
+        Object.keys(parsed).forEach(function (key) {
+          data[key] = parsed[key];
+        });
+      }
+    }
+
+    const keys = Object.keys(data).filter(function (key) {
+      return key !== "website_confirm";
+    });
+
+    if (keys.length === 0) {
+      throw new Error("No form fields received");
+    }
+
+    const props = PropertiesService.getScriptProperties();
+    let spreadsheetId = props.getProperty("SPREADSHEET_ID");
+    let spreadsheet;
+
+    if (spreadsheetId) {
+      spreadsheet = SpreadsheetApp.openById(spreadsheetId);
+    } else {
+      spreadsheet = SpreadsheetApp.create(SPREADSHEET_NAME);
+      spreadsheetId = spreadsheet.getId();
+      props.setProperty("SPREADSHEET_ID", spreadsheetId);
+
+      const sheet = spreadsheet.getSheets()[0];
+      sheet.setName("Submissions");
+      sheet.appendRow([
+        "Received at",
+        "Status",
+        "Submission data"
+      ]);
+      sheet.setFrozenRows(1);
+    }
+
+    const sheet = spreadsheet.getSheetByName("Submissions");
+
+    sheet.appendRow([
+      new Date(),
+      "در انتظار بررسی",
+      JSON.stringify(data)
+    ]);
+
+    MailApp.sendEmail({
+      to: NOTIFY_EMAIL,
+      subject: "New PinkQueenPlus Ads submission",
+      body:
+        "A new advertising submission was received.\n\n" +
+        JSON.stringify(data, null, 2) +
+        "\n\nReview the submissions here:\n" +
+        spreadsheet.getUrl()
+    });
+
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        success: true,
+        message: "Submission received"
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+
+  } catch (error) {
+    console.error(error);
+
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        success: false,
+        message: "Submission could not be processed"
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
