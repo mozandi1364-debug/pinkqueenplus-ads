@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://mozandi1364-debug.github.io/pinkqueenplus-ads/sitemap.xml

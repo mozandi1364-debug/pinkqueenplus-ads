@@ -93,7 +93,23 @@ h1{letter-spacing:-1.6px}
 .navlink{font-size:.82rem;padding:9px 12px}
 .wrap{width:calc(100% - 28px)}
 }
+
+.filter:focus-visible {
+  outline: 3px solid currentColor;
+  outline-offset: 3px;
+}
+
 </style>
+
+  <link rel="canonical" href="https://mozandi1364-debug.github.io/pinkqueenplus-ads/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="PinkQueenPlus Ads">
+  <meta property="og:title" content="PinkQueenPlus Ads | Creative Campaign Showcase">
+  <meta property="og:description" content="Discover advertising inspiration across technology, beauty, automotive, food, travel, property, fashion and business. Submit your campaign to PinkQueenPlus Ads.">
+  <meta property="og:url" content="https://mozandi1364-debug.github.io/pinkqueenplus-ads/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="PinkQueenPlus Ads | Creative Campaign Showcase">
+  <meta name="twitter:description" content="Discover advertising inspiration across technology, beauty, automotive, food, travel, property, fashion and business. Submit your campaign to PinkQueenPlus Ads.">
 </head>
 <body>
 <header class="wrap nav">
@@ -122,16 +138,16 @@ h1{letter-spacing:-1.6px}
 <h2>Explore by industry</h2>
 <p class="intro">Browse creative directions for products, services and organizations of all sizes. These cards are illustrative concepts, not claims of work commissioned by the brands in external references.</p>
 <div class="filters" role="group" aria-label="Filter industries">
-<button class="filter active" data-filter="all">All industries</button>
-<button class="filter" data-filter="tech">Technology</button>
-<button class="filter" data-filter="beauty">Beauty</button>
-<button class="filter" data-filter="auto">Automotive</button>
-<button class="filter" data-filter="food">Food &amp; drink</button>
-<button class="filter" data-filter="travel">Travel &amp; hotels</button>
-<button class="filter" data-filter="property">Property</button>
-<button class="filter" data-filter="fashion">Fashion</button>
-<button class="filter" data-filter="business">Business &amp; services</button>
-<button class="filter" data-filter="sport">Sport &amp; wellness</button>
+<button class="filter active" data-filter="all" aria-pressed="true">All industries</button>
+<button class="filter" data-filter="tech" aria-pressed="false">Technology</button>
+<button class="filter" data-filter="beauty" aria-pressed="false">Beauty</button>
+<button class="filter" data-filter="auto" aria-pressed="false">Automotive</button>
+<button class="filter" data-filter="food" aria-pressed="false">Food &amp; drink</button>
+<button class="filter" data-filter="travel" aria-pressed="false">Travel &amp; hotels</button>
+<button class="filter" data-filter="property" aria-pressed="false">Property</button>
+<button class="filter" data-filter="fashion" aria-pressed="false">Fashion</button>
+<button class="filter" data-filter="business" aria-pressed="false">Business &amp; services</button>
+<button class="filter" data-filter="sport" aria-pressed="false">Sport &amp; wellness</button>
 </div>
 
 <div class="gallery">
@@ -205,6 +221,7 @@ button.addEventListener('click',function(){
 var filter=button.dataset.filter;
 document.querySelectorAll('.filter').forEach(function(b){
 b.classList.toggle('active',b===button);
+            b.setAttribute('aria-pressed', String(b === button));
 });
 document.querySelectorAll('.tile').forEach(function(tile){
 tile.hidden=filter!=='all'&&tile.dataset.category!==filter;
